@@ -1,14 +1,12 @@
-import { Dimensions, StyleSheet } from 'react-native';
-import { colors } from '../../../../utils/colors';
-import { moderateScale } from 'react-native-size-matters';
-import { Fonts } from '../../../../utils/fonts';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-
-const { width } = Dimensions.get('window');
-const cardWidth = (width - moderateScale(60)) / 2;
+import { StyleSheet } from "react-native";
+import { colors } from "../../../../utils/colors";
+import { moderateScale } from "react-native-size-matters";
+import { Fonts } from "../../../../utils/fonts";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export const getStyles = () => {
   const bottomTabHeight = useBottomTabBarHeight();
+
   return StyleSheet.create({
     container: {
       flex: 1,
@@ -27,63 +25,62 @@ export const getStyles = () => {
     greeting: {
       fontSize: Fonts.text,
       color: colors.white,
-      opacity: 0.9,
-      marginBottom: 4,
+      fontFamily: Fonts.SatisfyRegular,
+      marginBottom: moderateScale(5),
     },
     locationContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 20,
-      gap: 6,
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: moderateScale(20),
+      gap: moderateScale(6),
     },
     locationText: {
-      fontSize: 18,
-      color: '#FFFFFF',
-      fontWeight: '600',
+      fontSize: Fonts.largeText,
+      color: colors.white,
     },
     searchContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#FFFFFF',
+      height: moderateScale(50),
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: colors.white,
       borderRadius: moderateScale(30),
       paddingHorizontal: moderateScale(20),
       paddingVertical: moderateScale(5),
     },
     searchIcon: {
-      marginRight: 10,
+      marginRight: moderateScale(10),
     },
     searchInput: {
       flex: 1,
-      fontSize: 15,
-      color: '#000000',
+      fontSize: Fonts.smallText,
+      color: colors.black,
     },
-    content: {
-      flex: 1,
-    },
+    content: { flex: 1 },
     sectionHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
       paddingTop: moderateScale(24),
       paddingBottom: moderateScale(16),
       paddingHorizontal: moderateScale(24),
     },
     sectionTitle: {
-      fontSize: 22,
+      fontSize: Fonts.title,
       fontFamily: Fonts.SatisfyRegular,
-      color: '#000000',
+      color: colors.black,
     },
     seeAllText: {
-      fontSize: 14,
+      fontSize: Fonts.smallText,
       color: colors.primary,
-      fontWeight: '500',
+      fontFamily: Fonts.PoppinsMedium,
     },
     categoriesContainer: {
-      marginBottom: moderateScale(20),
+      height: moderateScale(80),
+      backgroundColor: colors.white,
     },
     categoriesContent: {
-      paddingHorizontal: moderateScale(24),
-      gap: moderateScale(10),
+      alignItems: "center",
+      paddingHorizontal: moderateScale(20),
     },
     categoryChip: {
       paddingHorizontal: moderateScale(20),
@@ -92,6 +89,7 @@ export const getStyles = () => {
       backgroundColor: colors.white,
       borderWidth: moderateScale(1),
       borderColor: colors.grey4,
+      marginRight: moderateScale(10),
     },
     categoryChipActive: {
       borderColor: colors.primary,
@@ -100,60 +98,23 @@ export const getStyles = () => {
     categoryText: {
       fontSize: Fonts.smallText,
       color: colors.grey2,
-      fontWeight: '500',
+      fontFamily: Fonts.PoppinsMedium,
     },
     categoryTextActive: {
       color: colors.white,
     },
-    productsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 10,
-      paddingHorizontal: moderateScale(24),
-    },
-    productCard: {
-      width: cardWidth,
-      marginBottom: 20,
-    },
-    imageContainer: {
-      position: 'relative',
+    categorySkeleton: {
+      width: moderateScale(75),
+      height: moderateScale(34),
       backgroundColor: colors.grey3,
-      borderRadius: 16,
-      overflow: 'hidden',
-      marginBottom: 8,
+      borderRadius: moderateScale(20),
+      marginRight: moderateScale(10),
     },
-    productImage: {
-      width: '100%',
-      height: cardWidth * 1.2,
-      resizeMode: 'cover',
-    },
-    wishlistButton: {
-      position: 'absolute',
-      top: 10,
-      right: 10,
-      backgroundColor: '#FFFFFF',
-      borderRadius: 20,
-      width: 36,
-      height: 36,
-      justifyContent: 'center',
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    productName: {
-      fontSize: Fonts.smallText,
-      fontWeight: '500',
-      marginBottom: moderateScale(4),
-    },
-    productPrice: {
-      fontSize: Fonts.smallText,
-      fontWeight: '700',
+    emptyBox: {
+      width: "100%",
+      height: moderateScale(300),
+      alignItems: "center",
+      justifyContent: "center",
     },
   });
 };

@@ -1,24 +1,25 @@
-import { View, TouchableOpacity, ScrollView, Image, Alert } from 'react-native';
-import { getStyles } from './ProfileScreen.styles';
-import CommonText from '../../../components/commonText';
-import CommonButton from '../../../components/commonButton';
-import CommonOutlineButton from '../../../components/outlineButton';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logout } from '../../../../store/slices/authSlice';
-import { CommonActions } from '@react-navigation/native';
-import Toast from 'react-native-simple-toast';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import { logoutApi } from '../../../../api/auth/authAPI';
-import { RootState } from '../../../../store/store';
-import { IMAGE_URL } from '../../../../api/apiUrls';
-import { CircleUserRound } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
-import Loader from '../../../components/loader';
+import { View, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { getStyles } from "./ProfileScreen.styles";
+import CommonText from "../../../components/commonText";
+import CommonButton from "../../../components/commonButton";
+import CommonOutlineButton from "../../../components/outlineButton";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logout } from "../../../../store/slices/authSlice";
+import { CommonActions } from "@react-navigation/native";
+import Toast from "react-native-simple-toast";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import { logoutApi } from "../../../../api/auth/authAPI";
+import { RootState } from "../../../../store/store";
+import { IMAGE_URL } from "../../../../api/apiUrls";
+import { CircleUserRound } from "lucide-react-native";
+import { moderateScale } from "react-native-size-matters";
+import Loader from "../../../components/loader";
+import { colors } from "../../../../utils/colors";
 
-type NavigationProp = BottomTabNavigationProp<AllNavParamList, 'ProfileScreen'>;
+type NavigationProp = BottomTabNavigationProp<AllNavParamList, "ProfileScreen">;
 
 type Props = {
   navigation: NavigationProp;
@@ -28,43 +29,45 @@ const ProfileScreen = ({ navigation }: Props) => {
   const styles = getStyles();
   const [showLoader, setShowLoader] = useState(false);
   const [image, setImage] = useState<string | null>(null);
-  const [gender, setGender] = useState('');
+  const [gender, setGender] = useState("");
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     if (user) {
-      if (user.image?.startsWith('http')) {
+      if (user.image == null) {
+        setImage(null);
+      } else if (user.image?.startsWith("http")) {
         setImage(user.image);
       } else {
         let img = IMAGE_URL + user.image;
         setImage(img);
       }
       switch (user.gender?.toString()) {
-        case '1':
-          setGender('Male');
+        case "1":
+          setGender("Male");
           break;
-        case '2':
-          setGender('Female');
+        case "2":
+          setGender("Female");
           break;
-        case '3':
-          setGender('Other');
+        case "3":
+          setGender("Other");
           break;
         default:
-          setGender('Not Selected');
+          setGender("Not Selected");
           break;
       }
     }
   }, [user]);
 
   const onLogoutPress = () => {
-    Alert.alert('Gift It', 'Are you sure you want to logout?', [
+    Alert.alert("Gift It", "Are you sure you want to logout?", [
       {
-        text: 'No',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
+        text: "No",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
       },
-      { text: 'Yes', onPress: () => handleLogout() },
+      { text: "Yes", onPress: () => handleLogout() },
     ]);
   };
 
@@ -74,16 +77,16 @@ const ProfileScreen = ({ navigation }: Props) => {
       await logoutApi();
       dispatch(logout());
       const keys = await AsyncStorage.getAllKeys();
-      const keysToRemove = keys.filter(key => key !== 'loginDetails');
+      const keysToRemove = keys.filter((key) => key !== "loginDetails");
       if (keysToRemove.length > 0) {
         await AsyncStorage.multiRemove(keysToRemove);
       }
-      Toast.showWithGravity('Logged out', Toast.LONG, Toast.BOTTOM);
+      Toast.showWithGravity("Logged out", Toast.LONG, Toast.BOTTOM);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'Onboarding' }],
-        }),
+          routes: [{ name: "Onboarding" }],
+        })
       );
     } catch (error: any) {
       Toast.showWithGravity(error.message, Toast.LONG, Toast.BOTTOM);
@@ -102,6 +105,7 @@ const ProfileScreen = ({ navigation }: Props) => {
               <CircleUserRound
                 size={moderateScale(140)}
                 strokeWidth={moderateScale(1)}
+                color={colors.black}
               />
             ) : (
               <Image
@@ -132,7 +136,7 @@ const ProfileScreen = ({ navigation }: Props) => {
             <CommonText style={styles.value}>XXXXXXXXXX</CommonText>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('ChangePassword')}
+              onPress={() => navigation.navigate("ChangePassword")}
             >
               <CommonText style={styles.link}>Change Password</CommonText>
             </TouchableOpacity>
@@ -159,7 +163,7 @@ const ProfileScreen = ({ navigation }: Props) => {
         <CommonButton
           label="Edit Profile"
           fullWidth={true}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => navigation.navigate("EditProfile")}
         />
         <CommonOutlineButton
           label="Logout"

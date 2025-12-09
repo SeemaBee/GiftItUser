@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useMemo } from 'react';
-import { moderateScale } from 'react-native-size-matters';
-import CommonText from './commonText';
-import { Fonts } from '../../utils/fonts';
-import { colors } from '../../utils/colors';
-import { BellDot, ChevronLeft } from 'lucide-react-native';
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useMemo } from "react";
+import { moderateScale } from "react-native-size-matters";
+import CommonText from "./commonText";
+import { Fonts } from "../../utils/fonts";
+import { colors } from "../../utils/colors";
+import { BellDot, ChevronLeft } from "lucide-react-native";
 
 type Props = {
   label: String;
@@ -47,11 +47,11 @@ const Header = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: "100%",
     height: Fonts.headerHeight,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: moderateScale(16),
   },
   label: {
@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
     width: moderateScale(50),
     height: moderateScale(50),
     borderRadius: moderateScale(25),
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primaryLight,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.primary,
   },
 });
 

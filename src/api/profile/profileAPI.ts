@@ -1,14 +1,14 @@
-import NetInfo from '@react-native-community/netinfo';
-import apiClient from '../apiClient';
-import { ENDPOINTS } from '../apiUrls';
+import NetInfo from "@react-native-community/netinfo";
+import apiClient from "../apiClient";
+import { ENDPOINTS } from "../apiUrls";
 
 export const formatErrorMessages = (
-  errorObj: Record<string, string | string[]>,
+  errorObj: Record<string, string | string[]>
 ): string => {
-  if (!errorObj || typeof errorObj !== 'object') return '';
+  if (!errorObj || typeof errorObj !== "object") return "";
 
   const fields = Object.keys(errorObj);
-  if (fields.length === 0) return '';
+  if (fields.length === 0) return "";
 
   // If there's only one error, return it as-is
   if (fields.length === 1) {
@@ -22,13 +22,13 @@ export const formatErrorMessages = (
     : (errorObj[fields[0]] as string);
 
   // Remove extra word (address, number, etc.)
-  const baseMessage = firstMsg.replace(/^(This|The)\s+\w+(?:\s+\w+)?\s+/i, '');
+  const baseMessage = firstMsg.replace(/^(This|The)\s+\w+(?:\s+\w+)?\s+/i, "");
 
   // Combine fields into readable string
   const formattedFields =
     fields.length === 1
       ? fields[0]
-      : `${fields.slice(0, -1).join(', ')} and ${fields.slice(-1)}`;
+      : `${fields.slice(0, -1).join(", ")} and ${fields.slice(-1)}`;
 
   return `The ${formattedFields} ${baseMessage}`;
 };
@@ -45,7 +45,7 @@ export const changePasswordApi = async ({
   const netState = await NetInfo.fetch();
 
   if (!netState.isConnected) {
-    throw new Error('No internet connection');
+    throw new Error("No internet connection");
   }
 
   try {
@@ -57,10 +57,7 @@ export const changePasswordApi = async ({
       },
       {
         params: { user_type: userType },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
+      }
     );
     return response.data;
   } catch (error: any) {
@@ -69,7 +66,7 @@ export const changePasswordApi = async ({
       let newErr = formatErrorMessages(errors);
       throw new Error(newErr);
     } else {
-      throw new Error(error?.response?.data?.message ?? 'Something went wrong');
+      throw new Error(error?.response?.data?.message ?? "Something went wrong");
     }
   }
 };
@@ -92,7 +89,7 @@ export const editProfileApi = async ({
   const netState = await NetInfo.fetch();
 
   if (!netState.isConnected) {
-    throw new Error('No internet connection');
+    throw new Error("No internet connection");
   }
 
   try {
@@ -107,10 +104,7 @@ export const editProfileApi = async ({
       },
       {
         params: { user_type: userType },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
+      }
     );
     return response.data;
   } catch (error: any) {
@@ -119,7 +113,7 @@ export const editProfileApi = async ({
       let newErr = formatErrorMessages(errors);
       throw new Error(newErr);
     } else {
-      throw new Error(error?.response?.data?.message ?? 'Something went wrong');
+      throw new Error(error?.response?.data?.message ?? "Something went wrong");
     }
   }
 };
@@ -128,15 +122,12 @@ export const deleteProfileImage = async (userType: number) => {
   const netState = await NetInfo.fetch();
 
   if (!netState.isConnected) {
-    throw new Error('No internet connection');
+    throw new Error("No internet connection");
   }
 
   try {
     const response = await apiClient.delete(ENDPOINTS.deleteProfileImage, {
       params: { user_type: userType },
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
     return response.data;
   } catch (error: any) {
@@ -145,7 +136,7 @@ export const deleteProfileImage = async (userType: number) => {
       let newErr = formatErrorMessages(errors);
       throw new Error(newErr);
     } else {
-      throw new Error(error?.response?.data?.message ?? 'Something went wrong');
+      throw new Error(error?.response?.data?.message ?? "Something went wrong");
     }
   }
 };
@@ -154,20 +145,18 @@ export const updateProfileImage = async (data: Object, userType: number) => {
   const netState = await NetInfo.fetch();
 
   if (!netState.isConnected) {
-    throw new Error('No internet connection');
+    throw new Error("No internet connection");
   }
 
   try {
     const response = await apiClient.post(ENDPOINTS.updateProfileImage, data, {
       params: { user_type: userType },
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
   } catch (error: any) {
-    console.log(error);
-
-    throw new Error(error?.response?.data?.message ?? 'Something went wrong');
+    throw new Error(error?.response?.data?.message ?? "Something went wrong");
   }
 };

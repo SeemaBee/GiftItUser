@@ -1,11 +1,11 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import React from 'react';
-import ReactNativeModal from 'react-native-modal';
-import { moderateScale } from 'react-native-size-matters';
-import { colors } from '../../utils/colors';
-import { Fonts } from '../../utils/fonts';
-import CommonText from './commonText';
-import { Camera, CircleX, Images, Trash2 } from 'lucide-react-native';
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import ReactNativeModal from "react-native-modal";
+import { moderateScale } from "react-native-size-matters";
+import { colors } from "../../utils/colors";
+import { Fonts } from "../../utils/fonts";
+import CommonText from "./commonText";
+import { Camera, CircleX, Images, Trash2 } from "lucide-react-native";
 
 type Props = {
   showPicker: boolean;
@@ -88,7 +88,7 @@ const ImagePickerModal = ({
 const styles = StyleSheet.create({
   modalBox: {
     margin: 0,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   imagePickerContainer: {
     padding: moderateScale(15),
@@ -97,10 +97,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   titleBox: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: moderateScale(20),
   },
   empty: {
@@ -114,14 +114,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: moderateScale(10),
     paddingVertical: moderateScale(5),
-    backgroundColor: colors.primaryLight,
+    backgroundColor: colors.primary,
     borderRadius: moderateScale(10),
     marginBottom: moderateScale(10),
   },
   buttonBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   selectionText: {
     color: colors.secondary,

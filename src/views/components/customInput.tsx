@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useState } from "react";
 import {
   View,
   TextInput,
@@ -8,90 +8,85 @@ import {
   TouchableOpacity,
   StyleProp,
   ViewStyle,
-} from 'react-native';
-import { moderateScale } from 'react-native-size-matters';
-import CommonText from './commonText';
-import { Fonts } from '../../utils/fonts';
-import { colors } from '../../utils/colors';
-import { Eye, EyeOff } from 'lucide-react-native';
+} from "react-native";
+import { moderateScale } from "react-native-size-matters";
+import CommonText from "./commonText";
+import { Fonts } from "../../utils/fonts";
+import { colors } from "../../utils/colors";
+import { Eye, EyeOff } from "lucide-react-native";
 
 type CustomTextInputProps = {
   label: string;
-  iconName?: string;
   value: string;
   onChangeText?: (value: string) => void;
   keyboardType?: KeyboardTypeOptions;
   editable?: boolean;
-  blurOnSubmit?: boolean;
   placeholder?: string;
   secureTextEntry?: boolean;
   autoCorrect?: boolean;
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoComplete?:
-    | 'off'
-    | 'name'
-    | 'email'
-    | 'username'
-    | 'password'
-    | 'tel'
-    | 'street-address'
-    | 'postal-code'
-    | 'cc-number';
+    | "off"
+    | "name"
+    | "email"
+    | "username"
+    | "password"
+    | "tel"
+    | "street-address"
+    | "postal-code"
+    | "cc-number";
   error?: string;
-  success?: boolean;
   onSubmit?: () => void;
   multiline?: boolean;
   numberOfLines?: number;
-  readOnly?: boolean;
   boxStyle?: StyleProp<ViewStyle>;
-} & Omit<TextInputProps, 'onChangeText'>;
+} & Omit<TextInputProps, "onChangeText">;
 
 const CustomTextInput = forwardRef<TextInput, CustomTextInputProps>(
   (
     {
       label,
-      iconName,
       value,
       onChangeText,
-      keyboardType = 'default',
+      keyboardType = "default",
       editable = true,
-      blurOnSubmit = false,
-      placeholder = '',
+      placeholder = "",
       secureTextEntry = false,
       autoCorrect = true,
-      autoCapitalize = 'none',
-      autoComplete = 'off',
-      error = '',
+      autoCapitalize = "none",
+      autoComplete = "off",
+      error = "",
       onSubmit,
       multiline = false,
       numberOfLines,
-      readOnly = false,
       boxStyle,
       ...props
     },
-    ref,
+    ref
   ) => {
     const [isFocused, setIsFocused] = useState(false);
     const [isSecure, setIsSecure] = useState(secureTextEntry);
 
     const toggleSecureEntry = useCallback(() => {
-      setIsSecure(prev => !prev);
+      setIsSecure((prev) => !prev);
     }, []);
 
+    const handleFocus = useCallback(() => setIsFocused(true), []);
+    const handleBlur = useCallback(() => setIsFocused(false), []);
+
     return (
-      <View style={[styles.inputGroup, boxStyle && boxStyle]}>
+      <View style={[styles.inputGroup, boxStyle]}>
         <CommonText style={styles.label}>{label}</CommonText>
 
-        <View style={styles.inputContainer}>
-          {/* {iconName && (
-            <Ionicons
-              name={iconName}
-              size={20}
-              color={colors.placeholderText}
-              style={styles.inputIcon}
-            />
-          )} */}
+        <View
+          style={[
+            styles.inputContainer,
+            isFocused && { borderColor: colors.primary },
+          ]}
+        >
           <TextInput
+            key={isSecure ? "secure" : "normal"}
+            textContentType="oneTimeCode"
             ref={ref}
             value={value}
             onChangeText={onChangeText}
@@ -104,17 +99,12 @@ const CustomTextInput = forwardRef<TextInput, CustomTextInputProps>(
             autoCapitalize={autoCapitalize}
             autoComplete={autoComplete}
             multiline={multiline}
-            readOnly={readOnly}
             numberOfLines={numberOfLines}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onSubmitEditing={onSubmit}
-            style={[
-              styles.input,
-              multiline && styles.multilineInput,
-              isFocused && { borderColor: colors.primary },
-            ]}
-            textAlignVertical={multiline ? 'top' : 'center'}
+            style={[styles.input, multiline && styles.multilineInput]}
+            textAlignVertical={multiline ? "top" : "center"}
             {...props}
           />
 
@@ -125,12 +115,12 @@ const CustomTextInput = forwardRef<TextInput, CustomTextInputProps>(
               style={styles.eyeIcon}
             >
               {isSecure ? (
-                <Eye size={moderateScale(20)} color={colors.placeholderText} />
-              ) : (
                 <EyeOff
                   size={moderateScale(20)}
                   color={colors.placeholderText}
                 />
+              ) : (
+                <Eye size={moderateScale(20)} color={colors.placeholderText} />
               )}
             </TouchableOpacity>
           )}
@@ -139,31 +129,28 @@ const CustomTextInput = forwardRef<TextInput, CustomTextInputProps>(
         {!!error && <CommonText style={styles.error}>{error}</CommonText>}
       </View>
     );
-  },
+  }
 );
 
 const styles = StyleSheet.create({
   inputGroup: {
-    marginBottom: moderateScale(10),
-    width: '100%',
+    marginBottom: moderateScale(12),
+    width: "100%",
   },
   label: {
     fontSize: Fonts.text,
-    marginBottom: moderateScale(8),
+    marginBottom: moderateScale(6),
     color: colors.black,
-    fontWeight: '400',
+    fontFamily: Fonts.PoppinsMedium,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.inputBackground,
     borderRadius: moderateScale(25),
     borderWidth: 1,
     borderColor: colors.border,
-    paddingHorizontal: moderateScale(12),
-  },
-  inputIcon: {
-    marginRight: moderateScale(10),
+    paddingHorizontal: moderateScale(14),
   },
   input: {
     flex: 1,
@@ -174,17 +161,17 @@ const styles = StyleSheet.create({
     paddingRight: moderateScale(35),
   },
   multilineInput: {
-    height: moderateScale(150),
-    textAlignVertical: 'top',
+    height: moderateScale(120),
   },
   eyeIcon: {
-    padding: moderateScale(8),
+    padding: moderateScale(6),
   },
   error: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     color: colors.error,
     fontSize: Fonts.miniText,
     marginTop: moderateScale(4),
+    fontFamily: Fonts.PoppinsRegular,
   },
 });
 

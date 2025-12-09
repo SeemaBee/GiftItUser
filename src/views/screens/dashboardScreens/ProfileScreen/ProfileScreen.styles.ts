@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
-import { colors } from '../../../../utils/colors';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { moderateScale } from 'react-native-size-matters';
-import { Fonts } from '../../../../utils/fonts';
+import { StyleSheet } from "react-native";
+import { colors } from "../../../../utils/colors";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { moderateScale } from "react-native-size-matters";
+import { Fonts } from "../../../../utils/fonts";
 
 export const getStyles = () => {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -17,48 +17,46 @@ export const getStyles = () => {
     headerTitle: {
       fontSize: Fonts.headingSmall,
       fontFamily: Fonts.SatisfyRegular,
-      fontWeight: '600',
       marginBottom: moderateScale(15),
     },
     content: {
       flex: 1,
     },
     profileImageContainer: {
-      alignItems: 'center',
+      alignItems: "center",
       marginTop: moderateScale(20),
       marginBottom: moderateScale(40),
     },
     profileImageWrapper: {
-      position: 'relative',
+      position: "relative",
     },
     profileImage: {
       width: moderateScale(140),
       height: moderateScale(140),
       borderRadius: moderateScale(70),
-      backgroundColor: '#f0f0f0',
+      backgroundColor: colors.grey4,
     },
     cameraIconContainer: {
-      position: 'absolute',
+      position: "absolute",
       bottom: moderateScale(5),
       right: moderateScale(5),
       width: moderateScale(36),
       height: moderateScale(36),
       borderRadius: moderateScale(18),
       backgroundColor: colors.secondary,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
       borderWidth: moderateScale(3),
       borderColor: colors.white,
     },
     fieldContainer: {
-      flexDirection: 'row',
+      flexDirection: "row",
       marginBottom: moderateScale(28),
     },
     label: {
-      width: '40%',
+      width: "40%",
       fontSize: Fonts.text,
-      color: '#999',
-      fontWeight: '400',
+      color: colors.grey6,
     },
     value: {
       fontSize: Fonts.text,
@@ -69,9 +67,9 @@ export const getStyles = () => {
       color: colors.secondary,
     },
     footer: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
       paddingVertical: moderateScale(20),
       marginBottom: moderateScale(20),
     },
@@ -81,7 +79,7 @@ export const getStyles = () => {
     },
     footerSeparator: {
       fontSize: Fonts.smallText,
-      color: '#ccc',
+      color: colors.divider,
       marginHorizontal: moderateScale(12),
     },
   });

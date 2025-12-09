@@ -1,23 +1,23 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AllNavParamList } from './AllNavParamList';
-import { Heart, Home, ShoppingCart, User } from 'lucide-react-native';
-import HomeScreen from '../views/screens/dashboardScreens/HomeScreen/HomeScreen';
-import WishlistScreen from '../views/screens/dashboardScreens/WishlistScreen/WishlistScreen';
-import ProfileScreen from '../views/screens/dashboardScreens/ProfileScreen/ProfileScreen';
-import CartScreen from '../views/screens/dashboardScreens/CartScreen/CartScreen';
-import { colors } from '../utils/colors';
-import { moderateScale } from 'react-native-size-matters';
-import { Fonts } from '../utils/fonts';
-import { StyleSheet, View } from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ProductDetailScreen from '../views/screens/dashboardScreens/ProductDetailScreen/ProductDetailScreen';
-import PaymentScreen from '../views/screens/dashboardScreens/PaymentScreen/PaymentScreen';
-import OrderDetailScreen from '../views/screens/dashboardScreens/OrderDetailScreen/OrderDetailScreen';
-import NotificationScreen from '../views/screens/dashboardScreens/NotificationScreen/NotificationScreen';
-import AddressScreen from '../views/screens/dashboardScreens/AddressScreen/AddressScreen';
-import ChangePassword from '../views/screens/dashboardScreens/ChangePassword/ChangePassword';
-import EditProfile from '../views/screens/dashboardScreens/EditProfile/EditProfile';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AllNavParamList } from "./AllNavParamList";
+import { Heart, Home, ShoppingCart, User } from "lucide-react-native";
+import HomeScreen from "../views/screens/dashboardScreens/HomeScreen/HomeScreen";
+import WishlistScreen from "../views/screens/dashboardScreens/WishlistScreen/WishlistScreen";
+import ProfileScreen from "../views/screens/dashboardScreens/ProfileScreen/ProfileScreen";
+import CartScreen from "../views/screens/dashboardScreens/CartScreen/CartScreen";
+import { colors } from "../utils/colors";
+import { moderateScale } from "react-native-size-matters";
+import { Fonts } from "../utils/fonts";
+import { StyleSheet, View } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import ProductDetailScreen from "../views/screens/dashboardScreens/ProductDetailScreen/ProductDetailScreen";
+import PaymentScreen from "../views/screens/dashboardScreens/PaymentScreen/PaymentScreen";
+import OrderDetailScreen from "../views/screens/dashboardScreens/OrderDetailScreen/OrderDetailScreen";
+import NotificationScreen from "../views/screens/dashboardScreens/NotificationScreen/NotificationScreen";
+import AddressScreen from "../views/screens/dashboardScreens/AddressScreen/AddressScreen";
+import ChangePassword from "../views/screens/dashboardScreens/ChangePassword/ChangePassword";
+import EditProfile from "../views/screens/dashboardScreens/EditProfile/EditProfile";
 
 const Tab = createBottomTabNavigator<AllNavParamList>();
 const Stack = createNativeStackNavigator<AllNavParamList>();
@@ -31,6 +31,19 @@ const HomeStack = () => {
         component={ProductDetailScreen}
       />
       <Stack.Screen name="AddressScreen" component={AddressScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const WishlistStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="WishlistScreen" component={WishlistScreen} />
+      <Stack.Screen
+        name="ProductDetailScreen"
+        component={ProductDetailScreen}
+      />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
     </Stack.Navigator>
   );
 };
@@ -64,19 +77,21 @@ function DashboardNavigation() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.inactiveTabColor,
+        freezeOnBlur: true,
+        popToTopOnBlur: true,
         tabBarStyle: {
           backgroundColor: colors.white,
           height: moderateScale(80),
           borderTopLeftRadius: moderateScale(20),
           borderTopRightRadius: moderateScale(20),
-          position: 'absolute',
-          overflow: 'hidden',
+          position: "absolute",
+          overflow: "hidden",
           paddingBottom: 0,
           marginBottom: 0,
         },
         tabBarLabelStyle: {
           fontSize: Fonts.extraSmallText,
-          fontWeight: '500',
+          fontWeight: "500",
           marginTop: moderateScale(15),
         },
       }}
@@ -85,7 +100,7 @@ function DashboardNavigation() {
         name="HomeStack"
         component={HomeStack}
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ size, color, focused }) => (
             <>
               {focused ? (
@@ -99,10 +114,10 @@ function DashboardNavigation() {
         }}
       />
       <Tab.Screen
-        name="WishlistScreen"
-        component={WishlistScreen}
+        name="WishlistStack"
+        component={WishlistStack}
         options={{
-          tabBarLabel: 'Wishlist',
+          tabBarLabel: "Wishlist",
           tabBarIcon: ({ size, color, focused }) => (
             <>
               {focused ? (
@@ -119,7 +134,7 @@ function DashboardNavigation() {
         name="ProfileStack"
         component={ProfileStack}
         options={{
-          title: 'Profile',
+          title: "Profile",
           tabBarIcon: ({ size, color, focused }) => (
             <>
               {focused ? (
@@ -136,7 +151,7 @@ function DashboardNavigation() {
         name="CartStack"
         component={CartStack}
         options={{
-          title: 'Cart',
+          title: "Cart",
           tabBarIcon: ({ size, color, focused }) => (
             <>
               {focused ? (

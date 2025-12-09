@@ -7,29 +7,29 @@ import {
   TouchableOpacity,
   TextInput,
   Keyboard,
-} from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { styles } from './Login.styles';
-import CommonText from '../../../components/commonText';
-import CustomTextInput from '../../../components/customInput';
-import CommonButton from '../../../components/commonButton';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import { Check } from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
-import { colors } from '../../../../utils/colors';
-import Container from '../../../components/container';
-import { emailRegex } from '../../../../utils/regex';
-import { loginApi, resendOtpApi } from '../../../../api/auth/authAPI';
-import { useDispatch } from 'react-redux';
-import { setToken, setUser } from '../../../../store/slices/authSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CommonActions } from '@react-navigation/native';
-import Toast from 'react-native-simple-toast';
-import Loader from '../../../components/loader';
-import { userType } from '../../../../utils/constants';
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { styles } from "./Login.styles";
+import CommonText from "../../../components/commonText";
+import CustomTextInput from "../../../components/customInput";
+import CommonButton from "../../../components/commonButton";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import { Check } from "lucide-react-native";
+import { moderateScale } from "react-native-size-matters";
+import { colors } from "../../../../utils/colors";
+import Container from "../../../components/container";
+import { emailRegex } from "../../../../utils/regex";
+import { loginApi, resendOtpApi } from "../../../../api/auth/authAPI";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "../../../../store/slices/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from "@react-navigation/native";
+import Toast from "react-native-simple-toast";
+import Loader from "../../../components/loader";
+import { userType } from "../../../../utils/constants";
 
-type NavigationProp = NativeStackNavigationProp<AllNavParamList, 'Login'>;
+type NavigationProp = NativeStackNavigationProp<AllNavParamList, "Login">;
 
 type Props = {
   navigation: NavigationProp;
@@ -37,10 +37,10 @@ type Props = {
 
 const Login = ({ navigation }: Props) => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
 
@@ -49,7 +49,7 @@ const Login = ({ navigation }: Props) => {
   }, []);
 
   const fetchRemberData = async () => {
-    let data = await AsyncStorage.getItem('loginDetails');
+    let data = await AsyncStorage.getItem("loginDetails");
     if (data) {
       setRememberMe(true);
       let loginData = JSON.parse(data);
@@ -63,22 +63,21 @@ const Login = ({ navigation }: Props) => {
   const handleLogin = async () => {
     Keyboard.dismiss();
     let hasErr = false;
-    if (email.trim() == '') {
+    if (email.trim() == "") {
       hasErr = true;
-      setEmailError('Required');
+      setEmailError("Required");
     } else if (!emailRegex.test(email.trim())) {
       hasErr = true;
-      setEmailError('Invalid email');
+      setEmailError("Invalid email");
     }
-    if (password.trim() == '') {
+    if (password.trim() == "") {
       hasErr = true;
-      setPasswordError('Required');
+      setPasswordError("Required");
     }
     if (!hasErr) {
       setShowLoader(true);
       try {
         const data = await loginApi(email, password, userType);
-        console.log('data - ', data.data.user_detail);
         if (data.data.user_detail.email_verified_at != null) {
           if (rememberMe) {
             let loginDetails = {
@@ -86,32 +85,32 @@ const Login = ({ navigation }: Props) => {
               password: password,
             };
             await AsyncStorage.setItem(
-              'loginDetails',
-              JSON.stringify(loginDetails),
+              "loginDetails",
+              JSON.stringify(loginDetails)
             );
           } else {
-            await AsyncStorage.removeItem('loginDetails');
+            await AsyncStorage.removeItem("loginDetails");
           }
           dispatch(setUser(data.data.user_detail));
           dispatch(setToken(data.token));
           await AsyncStorage.setItem(
-            'userData',
-            JSON.stringify(data.data.user_detail),
+            "userData",
+            JSON.stringify(data.data.user_detail)
           );
-          await AsyncStorage.setItem('authToken', data.token);
-          await AsyncStorage.setItem('loggedIn', JSON.stringify(true));
-          Toast.showWithGravity('Logged In', Toast.LONG, Toast.BOTTOM);
+          await AsyncStorage.setItem("authToken", data.token);
+          await AsyncStorage.setItem("loggedIn", JSON.stringify(true));
+          Toast.showWithGravity("Logged In", Toast.LONG, Toast.BOTTOM);
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{ name: 'Dashboard' }],
-            }),
+              routes: [{ name: "Dashboard" }],
+            })
           );
         } else {
           await resendOtpApi(email, userType);
           clearData();
-          navigation.navigate('VerifyOtp', {
-            from: 'login',
+          navigation.navigate("VerifyOtp", {
+            from: "login",
             email: email,
           });
         }
@@ -124,10 +123,10 @@ const Login = ({ navigation }: Props) => {
   };
 
   const clearData = () => {
-    setEmail('');
-    setEmailError('');
-    setPassword('');
-    setPasswordError('');
+    setEmail("");
+    setEmailError("");
+    setPassword("");
+    setPasswordError("");
   };
 
   return (
@@ -137,9 +136,9 @@ const Login = ({ navigation }: Props) => {
         label="Email Address"
         placeholder="abc@xyz.com"
         value={email}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setEmail(text);
-          setEmailError('');
+          setEmailError("");
         }}
         keyboardType="email-address"
         autoCapitalize="none"
@@ -153,9 +152,9 @@ const Login = ({ navigation }: Props) => {
         label="Password"
         placeholder="xxxxxxxxxxxx"
         value={password}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setPassword(text);
-          setPasswordError('');
+          setPasswordError("");
         }}
         secureTextEntry={true}
         returnKeyType="done"
@@ -179,7 +178,7 @@ const Login = ({ navigation }: Props) => {
           activeOpacity={0.8}
           onPress={() => {
             clearData();
-            navigation.navigate('ForgotPassword');
+            navigation.navigate("ForgotPassword");
           }}
         >
           <CommonText style={styles.forgotPassword}>
@@ -194,13 +193,13 @@ const Login = ({ navigation }: Props) => {
       />
       <View style={styles.registerContainer}>
         <CommonText style={styles.registerText}>
-          Don't have an account?{' '}
+          Don't have an account?{" "}
         </CommonText>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
             clearData();
-            navigation.navigate('SignUp');
+            navigation.navigate("SignUp");
           }}
         >
           <CommonText style={styles.registerLink}>Register</CommonText>

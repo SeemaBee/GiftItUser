@@ -5,53 +5,53 @@ import {
   TouchableOpacity,
   Platform,
   Keyboard,
-} from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { getStyles } from './EditProfile.styles';
-import Header from '../../../components/header';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import Container from '../../../components/container';
-import { Camera, CircleUserRound } from 'lucide-react-native';
-import ImagePickerModal from '../../../components/imagePickerModal';
-import CustomTextInput from '../../../components/customInput';
-import CommonDropDown from '../../../components/commonDropDown';
-import CommonButton from '../../../components/commonButton';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { phoneRegex } from '../../../../utils/regex';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../store/store';
-import { colors } from '../../../../utils/colors';
-import { moderateScale } from 'react-native-size-matters';
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { getStyles } from "./EditProfile.styles";
+import Header from "../../../components/header";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import Container from "../../../components/container";
+import { Camera, CircleUserRound } from "lucide-react-native";
+import ImagePickerModal from "../../../components/imagePickerModal";
+import CustomTextInput from "../../../components/customInput";
+import CommonDropDown from "../../../components/commonDropDown";
+import CommonButton from "../../../components/commonButton";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { phoneRegex } from "../../../../utils/regex";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store/store";
+import { colors } from "../../../../utils/colors";
+import { moderateScale } from "react-native-size-matters";
 import {
   deleteProfileImage,
   editProfileApi,
   updateProfileImage,
-} from '../../../../api/profile/profileAPI';
-import { userType } from '../../../../utils/constants';
-import { setUser } from '../../../../store/slices/authSlice';
-import Toast from 'react-native-simple-toast';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Loader from '../../../components/loader';
+} from "../../../../api/profile/profileAPI";
+import { userType } from "../../../../utils/constants";
+import { setUser } from "../../../../store/slices/authSlice";
+import Toast from "react-native-simple-toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Loader from "../../../components/loader";
 import {
   Asset,
   CameraOptions,
   launchCamera,
   launchImageLibrary,
-} from 'react-native-image-picker';
-import { IMAGE_URL } from '../../../../api/apiUrls';
+} from "react-native-image-picker";
+import { IMAGE_URL } from "../../../../api/apiUrls";
 
-type NavigationProp = NativeStackNavigationProp<AllNavParamList, 'EditProfile'>;
+type NavigationProp = NativeStackNavigationProp<AllNavParamList, "EditProfile">;
 
 type Props = {
   navigation: NavigationProp;
 };
 
 const genderData = [
-  { label: 'Male', value: '1' },
-  { label: 'Female', value: '2' },
-  { label: 'Other', value: '3' },
+  { label: "Male", value: "1" },
+  { label: "Female", value: "2" },
+  { label: "Other", value: "3" },
 ];
 
 const EditProfile = ({ navigation }: Props) => {
@@ -64,15 +64,17 @@ const EditProfile = ({ navigation }: Props) => {
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('Required'),
+    name: Yup.string().required("Required"),
     phoneNumber: Yup.string()
-      .matches(phoneRegex, 'Invalid phone number')
-      .required('Required'),
-    gender: Yup.string().required('Required'),
+      .matches(phoneRegex, "Invalid phone number")
+      .required("Required"),
+    gender: Yup.string().required("Required"),
   });
 
   useEffect(() => {
-    if (user.image?.startsWith('http')) {
+    if (user.image === null) {
+      setImage(null);
+    } else if (user.image?.startsWith("http")) {
       setImage(user.image);
     } else {
       let img = IMAGE_URL + user.image;
@@ -82,7 +84,7 @@ const EditProfile = ({ navigation }: Props) => {
 
   const onCameraOpen = async () => {
     const options: CameraOptions = {
-      mediaType: 'photo',
+      mediaType: "photo",
       maxWidth: 1080,
       maxHeight: 1080,
       quality: 0.2,
@@ -98,25 +100,24 @@ const EditProfile = ({ navigation }: Props) => {
     try {
       setShowLoader(true);
       const formData = new FormData();
-      formData.append('image', {
+      formData.append("image", {
         uri:
-          Platform.OS === 'android'
+          Platform.OS === "android"
             ? asset.uri
-            : asset.uri.replace('file://', ''),
-        name: asset.fileName || 'profileImage.jpg',
-        type: asset.type || 'image/jpeg',
+            : asset.uri.replace("file://", ""),
+        name: asset.fileName || "profileImage.jpg",
+        type: asset.type || "image/jpeg",
       });
       setShowImagePicker(false);
       const { data } = await updateProfileImage(formData, userType);
       if (data) {
-        Toast.showWithGravity('Image Updated', Toast.LONG, Toast.BOTTOM);
+        Toast.showWithGravity("Image Updated", Toast.LONG, Toast.BOTTOM);
         setImage(IMAGE_URL + data.image);
-        await AsyncStorage.setItem('userData', JSON.stringify(data));
+        await AsyncStorage.setItem("userData", JSON.stringify(data));
         dispatch(setUser(data));
       }
     } catch (error: any) {
       Toast.showWithGravity(error.message, Toast.LONG, Toast.BOTTOM);
-      console.error('Error in open camera:', error);
     } finally {
       setShowLoader(false);
     }
@@ -124,7 +125,7 @@ const EditProfile = ({ navigation }: Props) => {
 
   const onGalleryOpen = async () => {
     const options: CameraOptions = {
-      mediaType: 'photo',
+      mediaType: "photo",
       maxWidth: 1080,
       maxHeight: 1080,
       quality: 0.2,
@@ -141,25 +142,24 @@ const EditProfile = ({ navigation }: Props) => {
     try {
       setShowLoader(true);
       const formData = new FormData();
-      formData.append('image', {
+      formData.append("image", {
         uri:
-          Platform.OS === 'android'
+          Platform.OS === "android"
             ? asset.uri
-            : asset.uri.replace('file://', ''),
-        name: asset.fileName || 'profileImage.jpg',
-        type: asset.type || 'image/jpeg',
+            : asset.uri.replace("file://", ""),
+        name: asset.fileName || "profileImage.jpg",
+        type: asset.type || "image/jpeg",
       });
       setShowImagePicker(false);
       const { data } = await updateProfileImage(formData, userType);
       if (data) {
         setImage(IMAGE_URL + data.image);
-        Toast.showWithGravity('Image Updated', Toast.LONG, Toast.BOTTOM);
-        await AsyncStorage.setItem('userData', JSON.stringify(data));
+        Toast.showWithGravity("Image Updated", Toast.LONG, Toast.BOTTOM);
+        await AsyncStorage.setItem("userData", JSON.stringify(data));
         dispatch(setUser(data));
       }
     } catch (error: any) {
       Toast.showWithGravity(error.message, Toast.LONG, Toast.BOTTOM);
-      console.error('Error in open gallery:', error);
     } finally {
       setShowLoader(false);
     }
@@ -172,19 +172,20 @@ const EditProfile = ({ navigation }: Props) => {
       let data = await deleteProfileImage(userType);
       if (data) {
         Toast.showWithGravity(
-          'Profile Image removed',
+          "Profile Image removed",
           Toast.LONG,
-          Toast.BOTTOM,
+          Toast.BOTTOM
         );
         const updatedUser = {
           ...user,
           image: null,
         };
         dispatch(setUser(updatedUser));
+        AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
         setImage(null);
       }
     } catch (error) {
-      console.error('Error in delete profile image:', error);
+      console.log("Error in delete profile image:", error);
     } finally {
       setShowLoader(false);
     }
@@ -204,10 +205,10 @@ const EditProfile = ({ navigation }: Props) => {
       };
       let response = await editProfileApi(data);
       if (response) {
-        Toast.showWithGravity('Profile updated', Toast.LONG, Toast.BOTTOM);
+        Toast.showWithGravity("Profile updated", Toast.LONG, Toast.BOTTOM);
         await AsyncStorage.setItem(
-          'userData',
-          JSON.stringify(response.data.user_detail),
+          "userData",
+          JSON.stringify(response.data.user_detail)
         );
         dispatch(setUser(response.data.user_detail));
         navigation.goBack();
@@ -222,7 +223,7 @@ const EditProfile = ({ navigation }: Props) => {
   return (
     <View style={styles.container}>
       <Header
-        label={'Edit Profile'}
+        label={"Edit Profile"}
         showBackButton={true}
         onBackPress={() => navigation.goBack()}
       />
@@ -279,20 +280,20 @@ const EditProfile = ({ navigation }: Props) => {
               <CustomTextInput
                 label="Fullname"
                 value={values.name}
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                error={touched.name ? errors.name : ''}
+                onChangeText={handleChange("name")}
+                onBlur={handleBlur("name")}
+                error={touched.name ? errors.name : ""}
                 keyboardType="default"
               />
               <CustomTextInput
                 label="Phone Number"
                 value={values.phoneNumber}
-                onChangeText={handleChange('phoneNumber')}
-                onBlur={handleBlur('phoneNumber')}
-                error={touched.phoneNumber ? errors.phoneNumber : ''}
+                onChangeText={handleChange("phoneNumber")}
+                onBlur={handleBlur("phoneNumber")}
+                error={touched.phoneNumber ? errors.phoneNumber : ""}
                 keyboardType={Platform.select({
-                  ios: 'number-pad',
-                  android: 'numeric',
+                  ios: "number-pad",
+                  android: "numeric",
                 })}
               />
               <CommonDropDown
@@ -300,12 +301,12 @@ const EditProfile = ({ navigation }: Props) => {
                 data={genderData}
                 initialValue={
                   genderData.find(
-                    item => item.value === values.gender?.toString(),
+                    (item) => item.value === values.gender?.toString()
                   ) || null
                 }
-                onSelect={val => setFieldValue('gender', val)}
+                onSelect={(val) => setFieldValue("gender", val)}
                 placeHolderText="Select your gender"
-                error={touched.gender ? errors.gender : ''}
+                error={touched.gender ? errors.gender : ""}
               />
               <CommonButton
                 label="Save Changes"

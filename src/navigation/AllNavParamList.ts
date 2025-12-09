@@ -11,6 +11,7 @@ export type AllNavParamList = {
   HomeScreen: undefined;
   ProductDetailScreen: undefined;
   OrderDetailScreen: undefined;
+  WishlistStack: undefined;
   WishlistScreen: undefined;
   ProfileStack: undefined;
   ProfileScreen: undefined;
@@ -20,15 +21,5 @@ export type AllNavParamList = {
   CartScreen: undefined;
   PaymentScreen: undefined;
   NotificationScreen: undefined;
-  AddressScreen:
-    | {
-        addressId?: string;
-        addressLabel?: string;
-        streetAddress?: string;
-        city?: string;
-        state?: string;
-        zipCode?: string;
-        country?: string;
-      }
-    | undefined;
+  AddressScreen: undefined;
 };

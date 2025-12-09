@@ -1,6 +1,12 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { getStyles } from './CartScreen.styles';
-import CommonText from '../../../components/commonText';
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  FlatList,
+} from "react-native";
+import { getStyles } from "./CartScreen.styles";
+import CommonText from "../../../components/commonText";
 import {
   Calendar,
   ChevronUp,
@@ -8,127 +14,223 @@ import {
   MapPin,
   Minus,
   Plus,
-} from 'lucide-react-native';
-import { colors } from '../../../../utils/colors';
-import { moderateScale } from 'react-native-size-matters';
-import { useState } from 'react';
-import CheckBox from '../../../components/checkBox';
-import CommonButton from '../../../components/commonButton';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import Header from '../../../components/header';
+  Trash2,
+} from "lucide-react-native";
+import { colors } from "../../../../utils/colors";
+import { moderateScale } from "react-native-size-matters";
+import { useState } from "react";
+import CheckBox from "../../../components/checkBox";
+import CommonButton from "../../../components/commonButton";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import Header from "../../../components/header";
+import DatePicker from "react-native-date-picker";
+import {
+  discountedPrice,
+  formatDate,
+  formatTime,
+} from "../../../../utils/functions";
+import Chip from "../../../components/chip";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store/store";
+import {
+  removeCartProduct,
+  updateCartItem,
+} from "../../../../store/slices/cartSlice";
+import Toast from "react-native-simple-toast";
 
-type NavigationProp = BottomTabNavigationProp<AllNavParamList, 'CartScreen'>;
+type NavigationProp = BottomTabNavigationProp<AllNavParamList, "CartScreen">;
 
 type Props = {
   navigation: NavigationProp;
 };
 
+type Mode = "time" | "date" | "datetime";
+
 const CartScreen = ({ navigation }: Props) => {
   const [addGiftPacking, setAddGiftPacking] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [deliveryOption, setDeliveryOption] = useState<'takeaway' | 'delivery'>(
-    'takeaway',
+  const [deliveryOption, setDeliveryOption] = useState<"takeaway" | "delivery">(
+    "takeaway"
   );
   const [showDetails, setShowDetails] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
+  const [mode, setMode] = useState<Mode>("date");
+  const cartData = useSelector((state: RootState) => state.cartSlice.cartItem);
+
+  const dispatch = useDispatch();
 
   const styles = getStyles();
+
+  const showMode = (currentMode: Mode) => {
+    setOpen(true);
+    setMode(currentMode);
+  };
   return (
     <View style={styles.container}>
       <Header
         showBackButton={false}
         showNotification={true}
-        label={'My Cart'}
-        onNotificationPress={() => navigation.navigate('NotificationScreen')}
+        label={"My Cart"}
+        onNotificationPress={() => navigation.navigate("NotificationScreen")}
       />
       <ScrollView style={styles.flx} showsVerticalScrollIndicator={false}>
-        <View style={styles.subContainer}>
-          <View style={styles.cartItem}>
-            <View style={styles.itemImageContainer}>
-              <Image
-                source={{
-                  uri: 'https://t3.ftcdn.net/jpg/16/39/73/78/240_F_1639737832_TlnFAUBrbDJYIYTwYuCM2EV843kgXab5.jpg',
-                }}
-                style={styles.itemImage}
-                resizeMode="contain"
+        <FlatList
+          data={cartData}
+          renderItem={({ item }) => (
+            <View style={styles.subContainer}>
+              <View style={styles.cartItem}>
+                <View style={styles.itemImageContainer}>
+                  <Image
+                    source={{
+                      uri: item.product.files[0].url,
+                    }}
+                    style={styles.itemImage}
+                    resizeMode="contain"
+                  />
+                </View>
+
+                <View style={styles.itemDetails}>
+                  <CommonText style={styles.itemName}>
+                    {item.product.title}
+                  </CommonText>
+                  <View style={styles.priceRow}>
+                    <CommonText style={styles.discountedPrice}>
+                      {Number(item.product.discount) > 0
+                        ? discountedPrice(
+                            item.product.price,
+                            item.product.discount
+                          )
+                        : item.product.price}
+                    </CommonText>
+                    {Number(item.product.discount) > 0 && (
+                      <CommonText style={styles.actualPrice}>
+                        {item.product.price}
+                      </CommonText>
+                    )}
+                    {Number(item.product.discount) > 0 && (
+                      <Chip label={item.product.discount} />
+                    )}
+                  </View>
+
+                  <View style={styles.quantityContainer}>
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => {
+                        if (item.count > 1) {
+                          dispatch(
+                            updateCartItem({
+                              product: item.product,
+                              count: item.count - 1,
+                            })
+                          );
+                        } else {
+                          dispatch(removeCartProduct(item.product.id));
+                          Toast.showWithGravity(
+                            "Item removed from Cart",
+                            Toast.LONG,
+                            Toast.BOTTOM
+                          );
+                        }
+                      }}
+                    >
+                      {item.count === 1 ? (
+                        <Trash2
+                          size={moderateScale(15)}
+                          color={colors.primary}
+                        />
+                      ) : (
+                        <Minus
+                          size={moderateScale(15)}
+                          color={colors.primary}
+                        />
+                      )}
+                    </TouchableOpacity>
+                    <CommonText style={styles.quantityText}>
+                      {item.count}
+                    </CommonText>
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() =>
+                        dispatch(
+                          updateCartItem({
+                            product: item.product,
+                            count: item.count + 1,
+                          })
+                        )
+                      }
+                    >
+                      <Plus size={moderateScale(15)} color={colors.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.section}>
+                <CommonText style={styles.sectionTitle}>
+                  Delivery Status
+                </CommonText>
+                <View style={styles.radioGroup}>
+                  <TouchableOpacity
+                    style={styles.radioOption}
+                    onPress={() => setDeliveryOption("takeaway")}
+                  >
+                    <View style={styles.radioOuter}>
+                      {deliveryOption === "takeaway" && (
+                        <View style={styles.radioInner} />
+                      )}
+                    </View>
+                    <CommonText style={styles.radioLabel}>Take away</CommonText>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.radioOption}
+                    onPress={() => setDeliveryOption("delivery")}
+                  >
+                    <View style={styles.radioOuter}>
+                      {deliveryOption === "delivery" && (
+                        <View style={styles.radioInner} />
+                      )}
+                    </View>
+                    <CommonText style={styles.radioLabel}>Delivery</CommonText>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <CommonText style={styles.selectDateText}>
+                Select Date & Time for Delivery
+              </CommonText>
+              <View style={styles.row}>
+                <TouchableOpacity
+                  style={styles.row}
+                  activeOpacity={0.8}
+                  onPress={() => showMode("date")}
+                >
+                  <Calendar color={colors.primary} size={moderateScale(15)} />
+                  <CommonText style={styles.dateTimeText}>
+                    {formatDate(date)}
+                  </CommonText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.row}
+                  activeOpacity={0.8}
+                  onPress={() => showMode("time")}
+                >
+                  <Clock color={colors.primary} size={moderateScale(15)} />
+                  <CommonText style={styles.dateTimeText}>
+                    {formatTime(time)}
+                  </CommonText>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.divider} />
+              <CheckBox
+                isSelected={addGiftPacking}
+                onChange={() => setAddGiftPacking(!addGiftPacking)}
+                label="Add Gift Packing"
               />
             </View>
-
-            <View style={styles.itemDetails}>
-              <Text style={styles.itemName}>Floral Fiona</Text>
-
-              <View style={styles.priceRow}>
-                <Text style={styles.discountedPrice}>$40.00</Text>
-                <Text style={styles.actualPrice}>$50.00</Text>
-                <View style={styles.discountBadge}>
-                  <Text style={styles.discountText}>20% OFF</Text>
-                </View>
-              </View>
-
-              <View style={styles.quantityContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.quantityButton}
-                  onPress={() => setQuantity(Math.max(1, quantity - 1))}
-                >
-                  <Minus size={moderateScale(20)} color={colors.primary} />
-                </TouchableOpacity>
-                <Text style={styles.quantityText}>{quantity}</Text>
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.quantityButton}
-                  onPress={() => setQuantity(quantity + 1)}
-                >
-                  <Plus size={moderateScale(20)} color={colors.primary} />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Delivery Status</Text>
-            <View style={styles.radioGroup}>
-              <TouchableOpacity
-                style={styles.radioOption}
-                onPress={() => setDeliveryOption('takeaway')}
-              >
-                <View style={styles.radioOuter}>
-                  {deliveryOption === 'takeaway' && (
-                    <View style={styles.radioInner} />
-                  )}
-                </View>
-                <Text style={styles.radioLabel}>Take away</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.radioOption}
-                onPress={() => setDeliveryOption('delivery')}
-              >
-                <View style={styles.radioOuter}>
-                  {deliveryOption === 'delivery' && (
-                    <View style={styles.radioInner} />
-                  )}
-                </View>
-                <Text style={styles.radioLabel}>Delivery</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <CommonText style={styles.selectDateText}>
-            Select Date & Time for Delivery
-          </CommonText>
-          <View style={styles.row}>
-            <Clock color={colors.primary} size={moderateScale(15)} />
-            <CommonText style={styles.dateTimeText}>10:00 AM</CommonText>
-            <Calendar color={colors.primary} size={moderateScale(15)} />
-            <CommonText style={styles.dateTimeText}>15/07/2025</CommonText>
-          </View>
-          <View style={styles.divider} />
-          <CheckBox
-            isSelected={addGiftPacking}
-            onChange={() => setAddGiftPacking(!addGiftPacking)}
-            label="Add Gift Packing"
-          />
-        </View>
+          )}
+        />
         <View style={styles.iconContainer}>
           <TouchableOpacity
             style={styles.upIconBox}
@@ -152,17 +254,7 @@ const CartScreen = ({ navigation }: Props) => {
               </View>
               <TouchableOpacity
                 style={styles.changeBox}
-                onPress={() =>
-                  navigation.navigate('AddressScreen', {
-                    addressId: '1',
-                    addressLabel: 'Home',
-                    streetAddress: '1234 Elm Street',
-                    city: 'Springfield',
-                    state: 'IL',
-                    zipCode: '62704',
-                    country: 'USA',
-                  })
-                }
+                onPress={() => navigation.navigate("AddressScreen")}
               >
                 <CommonText style={styles.changeText}>Change</CommonText>
               </TouchableOpacity>
@@ -201,12 +293,31 @@ const CartScreen = ({ navigation }: Props) => {
             </View>
             <CommonButton
               fullWidth={true}
-              onPress={() => navigation.navigate('PaymentScreen')}
+              onPress={() => navigation.navigate("PaymentScreen")}
               label="Proceed to Checkout"
             />
           </View>
         </View>
       </ScrollView>
+      <DatePicker
+        modal
+        open={open}
+        mode={mode}
+        date={date}
+        minimumDate={new Date()}
+        is24hourSource="locale"
+        onConfirm={(date) => {
+          setOpen(false);
+          if (mode == "date") {
+            setDate(date);
+          } else {
+            setTime(date);
+          }
+        }}
+        onCancel={() => {
+          setOpen(false);
+        }}
+      />
     </View>
   );
 };

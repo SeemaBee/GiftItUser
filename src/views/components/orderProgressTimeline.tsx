@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Svg, { Circle, Line } from 'react-native-svg';
-import { moderateScale } from 'react-native-size-matters';
-import { colors } from '../../utils/colors';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import Svg, { Circle, Line } from "react-native-svg";
+import { moderateScale } from "react-native-size-matters";
+import { colors } from "../../utils/colors";
+import CommonText from "./commonText";
 
 interface Step {
   title: string;
@@ -14,21 +15,21 @@ interface Step {
 const OrderProgressTimeline = () => {
   const steps: Step[] = [
     {
-      title: 'Payment Paid',
-      date: '22 Jul, 2025',
-      time: '11:00 AM',
+      title: "Payment Paid",
+      date: "22 Jul, 2025",
+      time: "11:00 AM",
       isCompleted: true,
     },
     {
-      title: 'Shipped',
-      date: '24 Jul, 2025',
-      time: '03:00 PM',
+      title: "Shipped",
+      date: "24 Jul, 2025",
+      time: "03:00 PM",
       isCompleted: true,
     },
     {
-      title: 'Delivery',
-      date: '25 Jul, 2025',
-      time: '10:30 AM',
+      title: "Delivery",
+      date: "25 Jul, 2025",
+      time: "10:30 AM",
       isCompleted: false,
     },
   ];
@@ -47,7 +48,7 @@ const OrderProgressTimeline = () => {
                   y1="20"
                   x2="150%"
                   y2="20"
-                  stroke={step.isCompleted ? colors.primary : '#DADADA'}
+                  stroke={step.isCompleted ? colors.primary : "#DADADA"}
                   strokeWidth="2"
                 />
               )}
@@ -57,9 +58,9 @@ const OrderProgressTimeline = () => {
                 cx="50%"
                 cy="20"
                 r="10"
-                stroke={step.isCompleted ? colors.primary : '#DADADA'}
+                stroke={step.isCompleted ? colors.primary : "#DADADA"}
                 strokeWidth="1"
-                fill={'white'}
+                fill={"white"}
               />
 
               {step.isCompleted && (
@@ -72,7 +73,7 @@ const OrderProgressTimeline = () => {
                   y1="20"
                   x2="42%"
                   y2="20"
-                  stroke={step.isCompleted ? colors.primary : '#DADADA'}
+                  stroke={step.isCompleted ? colors.primary : "#DADADA"}
                   strokeWidth="2"
                 />
               )}
@@ -80,16 +81,16 @@ const OrderProgressTimeline = () => {
 
             {/* Labels */}
             <View style={styles.textContainer}>
-              <Text
+              <CommonText
                 style={[
                   styles.title,
-                  { color: step.isCompleted ? '#333' : '#9E9E9E' },
+                  { color: step.isCompleted ? "#333" : "#9E9E9E" },
                 ]}
               >
                 {step.title}
-              </Text>
-              <Text style={styles.date}>{step.date}</Text>
-              <Text style={styles.date}>{step.time}</Text>
+              </CommonText>
+              <CommonText style={styles.date}>{step.date}</CommonText>
+              <CommonText style={styles.date}>{step.time}</CommonText>
             </View>
           </View>
         ))}
@@ -102,29 +103,29 @@ export default OrderProgressTimeline;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: "#FAFAFA",
     paddingVertical: moderateScale(10),
     borderRadius: moderateScale(10),
   },
   progressRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: moderateScale(10),
   },
   stepContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   textContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: moderateScale(4),
   },
   title: {
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: moderateScale(12),
   },
   date: {
     fontSize: moderateScale(10),
-    color: '#9E9E9E',
+    color: "#9E9E9E",
   },
 });

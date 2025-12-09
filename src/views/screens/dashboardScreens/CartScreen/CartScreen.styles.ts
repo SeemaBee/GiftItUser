@@ -1,8 +1,8 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { StyleSheet } from 'react-native';
-import { colors } from '../../../../utils/colors';
-import { moderateScale } from 'react-native-size-matters';
-import { Fonts } from '../../../../utils/fonts';
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { StyleSheet } from "react-native";
+import { colors } from "../../../../utils/colors";
+import { moderateScale } from "react-native-size-matters";
+import { Fonts } from "../../../../utils/fonts";
 
 export const getStyles = () => {
   const bottomTabHeight = useBottomTabBarHeight();
@@ -14,9 +14,9 @@ export const getStyles = () => {
       paddingTop: moderateScale(20),
     },
     headerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
       paddingHorizontal: moderateScale(20),
     },
     title: {
@@ -27,9 +27,9 @@ export const getStyles = () => {
       width: moderateScale(50),
       height: moderateScale(50),
       borderRadius: moderateScale(25),
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.primaryLight,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.primary,
     },
     flx: {
       flex: 1,
@@ -38,7 +38,7 @@ export const getStyles = () => {
       padding: moderateScale(20),
     },
     cartItem: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: 16,
       marginBottom: 20,
     },
@@ -50,20 +50,20 @@ export const getStyles = () => {
       padding: moderateScale(5),
     },
     itemImage: {
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
     },
     itemDetails: {
       flex: 1,
-      justifyContent: 'space-between',
+      justifyContent: "space-between",
     },
     itemName: {
       fontSize: Fonts.title,
       fontFamily: Fonts.SatisfyRegular,
     },
     priceRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       gap: 8,
     },
     discountedPrice: {
@@ -74,7 +74,7 @@ export const getStyles = () => {
     actualPrice: {
       fontSize: Fonts.smallText,
       fontFamily: Fonts.PoppinsMedium,
-      textDecorationLine: 'line-through',
+      textDecorationLine: "line-through",
       color: colors.grey6,
     },
     discountBadge: {
@@ -87,35 +87,22 @@ export const getStyles = () => {
       fontSize: Fonts.miniText,
     },
     quantityContainer: {
-      width: '60%',
-      height: moderateScale(50),
+      width: "40%",
+      height: moderateScale(30),
       borderRadius: moderateScale(50),
       backgroundColor: colors.inputBackground,
       paddingHorizontal: moderateScale(10),
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    quantityButton: {
-      width: 28,
-      height: 28,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    quantityButtonText: {
-      fontSize: 20,
-      fontWeight: '400',
-      color: '#D4A5C8',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
     },
     quantityText: {
-      fontSize: 18,
-      fontWeight: '600',
-      color: '#2C2C2C',
-      minWidth: 24,
-      textAlign: 'center',
+      fontSize: Fonts.smallText,
+      fontFamily: Fonts.PoppinsMedium,
+      textAlign: "center",
     },
     divider: {
-      width: '100%',
+      width: "100%",
       height: moderateScale(1),
       backgroundColor: colors.grey7,
       marginVertical: moderateScale(15),
@@ -128,13 +115,13 @@ export const getStyles = () => {
       marginBottom: moderateScale(12),
     },
     radioGroup: {
-      flexDirection: 'row',
+      flexDirection: "row",
       gap: moderateScale(15),
-      alignItems: 'center',
+      alignItems: "center",
     },
     radioOption: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       gap: moderateScale(8),
     },
     radioOuter: {
@@ -143,8 +130,8 @@ export const getStyles = () => {
       borderRadius: moderateScale(10),
       borderWidth: moderateScale(2),
       borderColor: colors.inactiveTabColor,
-      justifyContent: 'center',
-      alignItems: 'center',
+      justifyContent: "center",
+      alignItems: "center",
     },
     radioInner: {
       width: moderateScale(10),
@@ -160,8 +147,8 @@ export const getStyles = () => {
       fontSize: Fonts.smallText,
     },
     row: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
     },
     dateTimeText: {
       fontSize: Fonts.smallText,
@@ -170,13 +157,13 @@ export const getStyles = () => {
       marginLeft: moderateScale(5),
     },
     iconContainer: {
-      width: '100%',
-      alignItems: 'center',
+      width: "100%",
+      alignItems: "center",
     },
     upIconBox: {
       width: moderateScale(40),
-      alignItems: 'center',
-      justifyContent: 'center',
+      alignItems: "center",
+      justifyContent: "center",
       backgroundColor: colors.inputBackground,
       borderTopLeftRadius: moderateScale(50),
       borderTopRightRadius: moderateScale(50),
@@ -195,8 +182,8 @@ export const getStyles = () => {
       fontFamily: Fonts.PoppinsMedium,
     },
     addressCard: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
+      flexDirection: "row",
+      alignItems: "flex-start",
     },
     addressTitle: {
       fontSize: Fonts.smallText,
@@ -219,9 +206,9 @@ export const getStyles = () => {
       fontFamily: Fonts.PoppinsSemiBold,
     },
     dashDivider: {
-      width: '100%',
+      width: "100%",
       borderBottomWidth: moderateScale(1),
-      borderStyle: 'dashed',
+      borderStyle: "dashed",
       borderColor: colors.grey7,
     },
     chargeBox: {
@@ -239,9 +226,9 @@ export const getStyles = () => {
       fontFamily: Fonts.PoppinsSemiBold,
     },
     chargeRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
       marginVertical: moderateScale(5),
     },
   });

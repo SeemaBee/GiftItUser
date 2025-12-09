@@ -1,7 +1,7 @@
-import React, { ReactNode, useMemo } from 'react';
-import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
-import { Fonts } from '../../utils/fonts';
-import { colors } from '../../utils/colors';
+import React, { ReactNode } from "react";
+import { StyleProp, StyleSheet, Text, TextStyle } from "react-native";
+import { Fonts } from "../../utils/fonts";
+import { colors } from "../../utils/colors";
 
 type Props = {
   style?: StyleProp<TextStyle>;

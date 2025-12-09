@@ -1,37 +1,37 @@
-import { Keyboard, TextInput, TouchableOpacity, View } from 'react-native';
-import React, { useRef, useState } from 'react';
-import { styles } from './ResetPassword.styles';
-import { ChevronLeft } from 'lucide-react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import Container from '../../../components/container';
-import CommonText from '../../../components/commonText';
-import CustomTextInput from '../../../components/customInput';
-import CommonButton from '../../../components/commonButton';
-import { moderateScale } from 'react-native-size-matters';
-import { colors } from '../../../../utils/colors';
-import { passwordRegex } from '../../../../utils/regex';
-import Loader from '../../../components/loader';
-import { resetPasswordApi } from '../../../../api/auth/authAPI';
-import { userType } from '../../../../utils/constants';
-import { CommonActions, RouteProp } from '@react-navigation/native';
-import Toast from 'react-native-simple-toast';
+import { Keyboard, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useRef, useState } from "react";
+import { styles } from "./ResetPassword.styles";
+import { ChevronLeft } from "lucide-react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import Container from "../../../components/container";
+import CommonText from "../../../components/commonText";
+import CustomTextInput from "../../../components/customInput";
+import CommonButton from "../../../components/commonButton";
+import { moderateScale } from "react-native-size-matters";
+import { colors } from "../../../../utils/colors";
+import { passwordRegex } from "../../../../utils/regex";
+import Loader from "../../../components/loader";
+import { resetPasswordApi } from "../../../../api/auth/authAPI";
+import { userType } from "../../../../utils/constants";
+import { CommonActions, RouteProp } from "@react-navigation/native";
+import Toast from "react-native-simple-toast";
 
 type NavigationProp = NativeStackNavigationProp<
   AllNavParamList,
-  'ResetPassword'
+  "ResetPassword"
 >;
 
 type Props = {
   navigation: NavigationProp;
-  route: RouteProp<AllNavParamList, 'ResetPassword'>;
+  route: RouteProp<AllNavParamList, "ResetPassword">;
 };
 
 const ResetPassword = ({ navigation, route }: Props) => {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [newPassErr, setNewPassErr] = useState('');
-  const [confirmPassErr, setConfirmPassErr] = useState('');
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [newPassErr, setNewPassErr] = useState("");
+  const [confirmPassErr, setConfirmPassErr] = useState("");
   const [showLoader, setShowLoader] = useState(false);
 
   const email = route.params.email;
@@ -41,34 +41,34 @@ const ResetPassword = ({ navigation, route }: Props) => {
   const handleChangePassword = async () => {
     Keyboard.dismiss();
     let hasErr = false;
-    if (newPassword.trim() === '') {
+    if (newPassword.trim() === "") {
       hasErr = true;
-      setNewPassErr('Required');
+      setNewPassErr("Required");
     } else if (!passwordRegex.test(newPassword.trim())) {
       hasErr = true;
       setNewPassErr(
-        'Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.',
+        "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character."
       );
     }
-    if (confirmPassword.trim() === '') {
+    if (confirmPassword.trim() === "") {
       hasErr = true;
-      setConfirmPassErr('Required');
+      setConfirmPassErr("Required");
     }
     if (newPassword != confirmPassword) {
       hasErr = true;
-      setConfirmPassErr('Passwords did not match.');
+      setConfirmPassErr("Passwords did not match.");
     }
     if (!hasErr) {
       setShowLoader(true);
       try {
-        const data = await resetPasswordApi(email, newPassword, userType);
-        if (data) {
-          Toast.showWithGravity('Password changed.', Toast.LONG, Toast.BOTTOM);
+        const response = await resetPasswordApi(email, newPassword, userType);
+        if (response?.success) {
+          Toast.showWithGravity("Password changed.", Toast.LONG, Toast.BOTTOM);
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{ name: 'Onboarding' }],
-            }),
+              routes: [{ name: "Onboarding" }],
+            })
           );
         }
       } catch (error: any) {
@@ -98,9 +98,9 @@ const ResetPassword = ({ navigation, route }: Props) => {
         label="Enter New Password"
         placeholder="xxxxxxxxxx"
         value={newPassword}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setNewPassword(text);
-          setNewPassErr('');
+          setNewPassErr("");
         }}
         secureTextEntry={true}
         onSubmitEditing={() => confirmPassRef.current?.focus()}
@@ -112,9 +112,9 @@ const ResetPassword = ({ navigation, route }: Props) => {
         label="Confirm Password"
         placeholder="xxxxxxxxxx"
         value={confirmPassword}
-        onChangeText={text => {
+        onChangeText={(text) => {
           setConfirmPassword(text);
-          setConfirmPassErr('');
+          setConfirmPassErr("");
         }}
         secureTextEntry={true}
         returnKeyType="done"

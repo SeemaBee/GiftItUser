@@ -1,9 +1,9 @@
-import { Dimensions, StyleSheet } from 'react-native';
-import { moderateScale } from 'react-native-size-matters';
-import { Fonts } from '../../../../utils/fonts';
-import { colors } from '../../../../utils/colors';
+import { Dimensions, StyleSheet } from "react-native";
+import { moderateScale } from "react-native-size-matters";
+import { Fonts } from "../../../../utils/fonts";
+import { colors } from "../../../../utils/colors";
 
-const height = Dimensions.get('window').height;
+const height = Dimensions.get("window").height;
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,38 +12,38 @@ export const styles = StyleSheet.create({
     paddingBottom: moderateScale(60),
   },
   row: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
     marginBottom: moderateScale(15),
   },
   title: {
     fontSize: moderateScale(36),
     fontFamily: Fonts.SatisfyRegular,
-    color: '#000000',
+    color: colors.black,
     marginLeft: moderateScale(15),
   },
   description: {
-    width: '100%',
+    width: "100%",
     fontSize: moderateScale(14),
-    color: '#666666',
+    color: colors.grey2,
     marginBottom: moderateScale(40),
   },
   errorBox: {
-    width: '100%',
+    width: "100%",
     marginTop: moderateScale(15),
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   error: {
     fontSize: Fonts.miniText,
     color: colors.error,
   },
   resendBox: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: moderateScale(30),
     marginTop: moderateScale(10),
-    alignItems: 'center',
+    alignItems: "center",
   },
   resendText: {
     fontSize: Fonts.smallText,

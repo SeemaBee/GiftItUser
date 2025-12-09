@@ -1,20 +1,22 @@
-import { ImageBackground, StatusBar } from 'react-native';
-import React, { useEffect } from 'react';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AllNavParamList } from '../../../navigation/AllNavParamList';
-import { CommonActions } from '@react-navigation/native';
-import { colors } from '../../../utils/colors';
-import { styles } from './SplashScreen.styles';
-import LinearGradient from 'react-native-linear-gradient';
-import { Logo } from '../../../assets/svg';
-import { SplashBg } from '../../../assets/png';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
-import { setToken, setUser } from '../../../store/slices/authSlice';
+import { ImageBackground, StatusBar } from "react-native";
+import React, { useEffect } from "react";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { AllNavParamList } from "../../../navigation/AllNavParamList";
+import { CommonActions } from "@react-navigation/native";
+import { colors } from "../../../utils/colors";
+import { styles } from "./SplashScreen.styles";
+import LinearGradient from "react-native-linear-gradient";
+import { Logo } from "../../../assets/svg";
+import { SplashBg } from "../../../assets/png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { setToken, setUser } from "../../../store/slices/authSlice";
+import { getWishlistApi } from "../../../api/wishlist/wishlistAPI";
+import { setWishlist } from "../../../store/slices/wishlist";
 
 type NavigationProp = NativeStackNavigationProp<
   AllNavParamList,
-  'SplashScreen'
+  "SplashScreen"
 >;
 
 type Props = {
@@ -28,21 +30,29 @@ export default function SplashScreen({ navigation }: Props) {
   }, []);
 
   const checkLogin = async () => {
-    let data = await AsyncStorage.getItem('loggedIn');
+    let data = await AsyncStorage.getItem("loggedIn");
     let loggedIn = data ? JSON.parse(data) : false;
     if (loggedIn) {
-      let userDataString = await AsyncStorage.getItem('userData');
+      let userDataString = await AsyncStorage.getItem("userData");
 
-      let token = await AsyncStorage.getItem('authToken');
+      let token = await AsyncStorage.getItem("authToken");
       const userData = userDataString ? JSON.parse(userDataString) : null;
       if (userData) dispatch(setUser(userData));
       if (token) dispatch(setToken(token));
+      try {
+        const response = await getWishlistApi();
+        if (response?.success) {
+          dispatch(setWishlist(response.data.data));
+        }
+      } catch (error) {
+        console.log("error - ", error);
+      }
       setTimeout(() => {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: 'Dashboard' }],
-          }),
+            routes: [{ name: "Dashboard" }],
+          })
         );
       }, 3000);
     } else {
@@ -50,8 +60,8 @@ export default function SplashScreen({ navigation }: Props) {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
-            routes: [{ name: 'Onboarding' }],
-          }),
+            routes: [{ name: "Onboarding" }],
+          })
         );
       }, 3000);
     }
@@ -61,7 +71,7 @@ export default function SplashScreen({ navigation }: Props) {
     <>
       <StatusBar
         backgroundColor={colors.background}
-        barStyle={'dark-content'}
+        barStyle={"dark-content"}
       />
       <ImageBackground
         source={SplashBg}
@@ -69,7 +79,7 @@ export default function SplashScreen({ navigation }: Props) {
         resizeMode="cover"
       >
         <LinearGradient
-          colors={['#FFFFFF10', '#FFFFFF', '#FFFFFF10']}
+          colors={["#FFFFFF10", "#FFFFFF", "#FFFFFF10"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={styles.container}

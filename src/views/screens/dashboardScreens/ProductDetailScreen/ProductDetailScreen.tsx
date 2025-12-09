@@ -1,54 +1,97 @@
+import { View, ScrollView, TouchableOpacity, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import { getStyles } from "./ProductDetailScreen.styles";
+import CommonText from "../../../components/commonText";
+import { ChevronLeft, Heart, Minus, Plus, Star } from "lucide-react-native";
+import { moderateScale } from "react-native-size-matters";
+import { colors } from "../../../../utils/colors";
+import CommonButton from "../../../components/commonButton";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../../store/store";
+import Chip from "../../../components/chip";
+import { discountedPrice } from "../../../../utils/functions";
+import { addRemoveWishlistApi } from "../../../../api/wishlist/wishlistAPI";
+import Toast from "react-native-simple-toast";
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  FlatList,
-} from 'react-native';
-import React, { useState } from 'react';
-import { getStyles } from './ProductDetailScreen.styles';
-import CommonText from '../../../components/commonText';
+  removeFromWishList,
+  updateWishlist,
+} from "../../../../store/slices/wishlist";
+import Loader from "../../../components/loader";
 import {
-  Calendar,
-  ChevronLeft,
-  Clock,
-  Heart,
-  Minus,
-  Plus,
-  Star,
-} from 'lucide-react-native';
-import { moderateScale } from 'react-native-size-matters';
-import { colors } from '../../../../utils/colors';
-import CommonButton from '../../../components/commonButton';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
+  appendCartProducts,
+  removeCartProduct,
+  updateCartItem,
+} from "../../../../store/slices/cartSlice";
 
 type NavigationProp = BottomTabNavigationProp<
   AllNavParamList,
-  'ProductDetailScreen'
+  "ProductDetailScreen"
 >;
 
 type Props = {
   navigation: NavigationProp;
 };
 
-const thumbnails = [
-  'https://t4.ftcdn.net/jpg/15/65/09/13/240_F_1565091394_yMFlZN4NjysFiaQTP7z13GK9unIeOmGS.jpg',
-  'https://t3.ftcdn.net/jpg/06/90/13/26/240_F_690132659_2GhSdP6EB2bxsr9LKshtpIDjZUmW200w.jpg',
-  'https://t3.ftcdn.net/jpg/16/39/73/78/240_F_1639737832_TlnFAUBrbDJYIYTwYuCM2EV843kgXab5.jpg',
-];
-
-const colorsArr = ['#FF86AE', '#DA4FCB', '#ED7D5E'];
-
 const ProductDetailScreen = ({ navigation }: Props) => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedColor, setSelectedColor] = useState(0);
   const [wishlist, setWishlist] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
   const styles = getStyles();
+  const dispatch = useDispatch();
 
-  const toggleWishlist = (productId: number) => {
-    setWishlist(!wishlist);
+  const wishlistData = useSelector(
+    (state: RootState) => state.wishlist.wishlist
+  );
+
+  const cartData = useSelector((state: RootState) => state.cartSlice.cartItem);
+
+  const productDetail = useSelector(
+    (state: RootState) => state.product.selectedProduct
+  );
+
+  useEffect(() => {
+    let is_wishlist = wishlistData.find(
+      (item) => item.product_id == productDetail.id
+    );
+    setWishlist(is_wishlist == undefined ? false : true);
+  }, []);
+
+  useEffect(() => {
+    let isIncluded = cartData.find(
+      (item) => item.product.id === productDetail.id
+    );
+    if (isIncluded) {
+      setAddedToCart(true);
+      setCount(isIncluded.count);
+    } else {
+      setAddedToCart(false);
+      setCount(1);
+    }
+  }, [cartData]);
+
+  const toggleWishlist = async (productId: number) => {
+    setLoading(true);
+    try {
+      let response = await addRemoveWishlistApi(productId);
+      if (response.success) {
+        Toast.showWithGravity(response.message, Toast.SHORT, Toast.BOTTOM);
+        setWishlist(!wishlist);
+        if (response.action == "added") {
+          dispatch(updateWishlist(response.data));
+        } else {
+          dispatch(removeFromWishList(productId));
+        }
+      }
+    } catch (error) {
+      console.log("Wishlist error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,14 +110,14 @@ const ProductDetailScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
           <Image
             source={{
-              uri: thumbnails[selectedImage],
+              uri: productDetail.files[selectedImage].url,
             }}
             style={styles.image}
             resizeMode="contain"
           />
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() => toggleWishlist(selectedImage)}
+            onPress={() => toggleWishlist(productDetail.id)}
             style={styles.heartBox}
           >
             <Heart
@@ -85,7 +128,7 @@ const ProductDetailScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
         </View>
         <View style={styles.thumbnailContainer}>
-          {thumbnails.map((thumb, index) => (
+          {productDetail.files.map((file, index) => (
             <TouchableOpacity
               key={index}
               onPress={() => setSelectedImage(index)}
@@ -95,7 +138,7 @@ const ProductDetailScreen = ({ navigation }: Props) => {
               ]}
             >
               <Image
-                source={{ uri: thumb }}
+                source={{ uri: file.url }}
                 style={styles.thumbnailImage}
                 resizeMode="cover"
               />
@@ -105,7 +148,9 @@ const ProductDetailScreen = ({ navigation }: Props) => {
       </View>
       <View style={styles.detailContainer}>
         <View style={styles.row}>
-          <CommonText style={styles.productName}>Floral Fiona</CommonText>
+          <CommonText style={styles.productName}>
+            {productDetail.title}
+          </CommonText>
           <View style={styles.simpleRow}>
             <Star
               size={moderateScale(20)}
@@ -116,55 +161,122 @@ const ProductDetailScreen = ({ navigation }: Props) => {
           </View>
         </View>
         <View style={styles.simpleRow}>
-          <CommonText style={styles.discountedPrice}>$40.00</CommonText>
-          <CommonText style={styles.actualPrice}>$50.00</CommonText>
+          <CommonText style={styles.discountedPrice}>
+            {Number(productDetail.discount) > 0
+              ? discountedPrice(productDetail.price, productDetail.discount)
+              : productDetail.price}
+          </CommonText>
+          {Number(productDetail.discount) > 0 && (
+            <CommonText style={styles.actualPrice}>
+              {productDetail.price}
+            </CommonText>
+          )}
+          {Number(productDetail.discount) > 0 && (
+            <Chip label={productDetail.discount} />
+          )}
         </View>
         <View style={styles.divider} />
-        <View style={styles.simpleRow}>
-          <CommonText style={styles.selectColorText}>Select Color:</CommonText>
-          {colorsArr.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              activeOpacity={0.8}
-              onPress={() => setSelectedColor(index)}
-              style={[styles.colorDot, { backgroundColor: item }]}
-            >
-              <View style={selectedColor == index && styles.selectedColorDot} />
-            </TouchableOpacity>
-          ))}
-        </View>
-        <CommonText style={styles.colorDescText}>
-          There are many variations of passages of Lorem Ipsum available, but
-          the majority have suffered alteration in some form.
-        </CommonText>
+        {productDetail.colors.length > 0 && (
+          <View style={styles.simpleRow}>
+            <CommonText style={styles.selectColorText}>
+              Select Color:
+            </CommonText>
+            {productDetail.colors.map((color, index) => (
+              <TouchableOpacity
+                key={index}
+                activeOpacity={0.8}
+                onPress={() => setSelectedColor(index)}
+                style={[
+                  styles.colorDot,
+                  {
+                    backgroundColor: color.name.startsWith("#")
+                      ? color.name
+                      : color.name.toLowerCase(),
+                  },
+                ]}
+              >
+                <View
+                  style={selectedColor == index && styles.selectedColorDot}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+        {productDetail.description && (
+          <CommonText style={styles.colorDescText}>
+            {productDetail.description}
+          </CommonText>
+        )}
         <View style={styles.divider} />
-        <CommonText style={styles.selectDateText}>
-          Select Date & Time for Delivery
-        </CommonText>
-        <View style={styles.simpleRow}>
-          <Clock color={colors.primary} size={moderateScale(15)} />
-          <CommonText style={styles.dateTimeText}>10:00 AM</CommonText>
-          <Calendar color={colors.primary} size={moderateScale(15)} />
-          <CommonText style={styles.dateTimeText}>15/07/2025</CommonText>
-        </View>
-        <View style={[styles.row, { marginTop: moderateScale(20) }]}>
+        <View style={styles.row}>
           <View style={styles.counterContainer}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                if (count > 1) {
+                  if (addedToCart) {
+                    dispatch(
+                      updateCartItem({
+                        product: productDetail,
+                        count: count - 1,
+                      })
+                    );
+                  } else {
+                    setCount(count - 1);
+                  }
+                }
+              }}
+            >
               <Minus size={moderateScale(20)} color={colors.primary} />
             </TouchableOpacity>
-            <CommonText style={styles.countText}>1</CommonText>
-            <TouchableOpacity>
+            <CommonText style={styles.countText}>{count}</CommonText>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                if (addedToCart) {
+                  dispatch(
+                    updateCartItem({ product: productDetail, count: count + 1 })
+                  );
+                } else {
+                  setCount(count + 1);
+                }
+              }}
+            >
               <Plus size={moderateScale(20)} color={colors.primary} />
             </TouchableOpacity>
           </View>
           <CommonButton
-            label="Add to Cart"
+            label={addedToCart ? "Remove from Cart" : "Add to Cart"}
             fullWidth={false}
-            onPress={() => navigation.navigate('CartStack')}
+            onPress={() => {
+              if (addedToCart) {
+                dispatch(removeCartProduct(productDetail.id));
+                Toast.showWithGravity(
+                  "Item removed from Cart",
+                  Toast.LONG,
+                  Toast.BOTTOM
+                );
+              } else {
+                dispatch(
+                  appendCartProducts({
+                    product: productDetail,
+                    count: count,
+                    selectedColor: selectedColor,
+                  })
+                );
+                Toast.showWithGravity(
+                  "Item added to Cart",
+                  Toast.LONG,
+                  Toast.BOTTOM
+                );
+                navigation.navigate("CartStack");
+              }
+            }}
             buttonStyle={styles.buttonStyle}
           />
         </View>
       </View>
+      {loading && <Loader show={loading} />}
     </ScrollView>
   );
 };

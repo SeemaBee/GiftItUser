@@ -1,28 +1,28 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from "react";
 import {
   ActivityIndicator,
   TextInput,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp, useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MapPin, Pencil, Plus } from 'lucide-react-native';
-import { AllNavParamList } from '../../../../navigation/AllNavParamList';
-import { getStyles } from './AddressScreen.styles';
-import Header from '../../../components/header';
-import CustomTextInput from '../../../components/customInput';
-import CommonButton from '../../../components/commonButton';
-import CommonText from '../../../components/commonText';
-import Container from '../../../components/container';
-import { colors } from '../../../../utils/colors';
+} from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp, useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MapPin, Pencil, Plus } from "lucide-react-native";
+import { AllNavParamList } from "../../../../navigation/AllNavParamList";
+import { getStyles } from "./AddressScreen.styles";
+import Header from "../../../components/header";
+import CustomTextInput from "../../../components/customInput";
+import CommonButton from "../../../components/commonButton";
+import CommonText from "../../../components/commonText";
+import Container from "../../../components/container";
+import { colors } from "../../../../utils/colors";
 
 type NavigationProp = NativeStackNavigationProp<
   AllNavParamList,
-  'AddressScreen'
+  "AddressScreen"
 >;
-type AddressRouteProp = RouteProp<AllNavParamList, 'AddressScreen'>;
+type AddressRouteProp = RouteProp<AllNavParamList, "AddressScreen">;
 
 type Props = {
   navigation: NavigationProp;
@@ -39,7 +39,7 @@ type Address = {
   country: string;
 };
 
-const STORAGE_KEY = '@gifit:user-addresses';
+const STORAGE_KEY = "@gifit:user-addresses";
 
 const AddressScreen = ({ navigation, route }: Props) => {
   const params = route.params;
@@ -49,12 +49,12 @@ const AddressScreen = ({ navigation, route }: Props) => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
 
-  const [addressLabel, setAddressLabel] = useState('');
-  const [streetAddress, setStreetAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [zipCode, setZipCode] = useState('');
-  const [country, setCountry] = useState('');
+  const [addressLabel, setAddressLabel] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [country, setCountry] = useState("");
 
   const streetAddressRef = useRef<TextInput | null>(null);
   const cityRef = useRef<TextInput | null>(null);
@@ -66,12 +66,12 @@ const AddressScreen = ({ navigation, route }: Props) => {
   const hasPrefilledFromParams = useRef<boolean>(false);
 
   const resetForm = useCallback((address?: Address) => {
-    setAddressLabel(address?.addressLabel ?? '');
-    setStreetAddress(address?.streetAddress ?? '');
-    setCity(address?.city ?? '');
-    setState(address?.state ?? '');
-    setZipCode(address?.zipCode ?? '');
-    setCountry(address?.country ?? '');
+    setAddressLabel(address?.addressLabel ?? "");
+    setStreetAddress(address?.streetAddress ?? "");
+    setCity(address?.city ?? "");
+    setState(address?.state ?? "");
+    setZipCode(address?.zipCode ?? "");
+    setCountry(address?.country ?? "");
   }, []);
 
   const loadAddresses = useCallback(async () => {
@@ -89,7 +89,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
         setAddresses([]);
       }
     } catch (error) {
-      console.warn('Failed to load saved addresses', error);
+      console.log("Failed to load saved addresses", error);
       setAddresses([]);
     } finally {
       setIsLoadingAddresses(false);
@@ -99,7 +99,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
   useFocusEffect(
     useCallback(() => {
       loadAddresses();
-    }, [loadAddresses]),
+    }, [loadAddresses])
   );
 
   useEffect(() => {
@@ -116,19 +116,19 @@ const AddressScreen = ({ navigation, route }: Props) => {
     if (params?.addressId) {
       hasPrefilledFromParams.current = true;
       const existingAddress = addresses.find(
-        address => address.id === params.addressId,
+        (address) => address.id === params.addressId
       );
 
       const incomingData: Address = {
         id: params.addressId,
         addressLabel:
-          params.addressLabel ?? existingAddress?.addressLabel ?? '',
+          params.addressLabel ?? existingAddress?.addressLabel ?? "",
         streetAddress:
-          params.streetAddress ?? existingAddress?.streetAddress ?? '',
-        city: params.city ?? existingAddress?.city ?? '',
-        state: params.state ?? existingAddress?.state ?? '',
-        zipCode: params.zipCode ?? existingAddress?.zipCode ?? '',
-        country: params.country ?? existingAddress?.country ?? '',
+          params.streetAddress ?? existingAddress?.streetAddress ?? "",
+        city: params.city ?? existingAddress?.city ?? "",
+        state: params.state ?? existingAddress?.state ?? "",
+        zipCode: params.zipCode ?? existingAddress?.zipCode ?? "",
+        country: params.country ?? existingAddress?.country ?? "",
       };
 
       setEditingAddressId(incomingData.id);
@@ -139,12 +139,12 @@ const AddressScreen = ({ navigation, route }: Props) => {
 
   const isFormValid = useCallback(() => {
     return (
-      addressLabel.trim() !== '' &&
-      streetAddress.trim() !== '' &&
-      city.trim() !== '' &&
-      state.trim() !== '' &&
-      zipCode.trim() !== '' &&
-      country.trim() !== ''
+      addressLabel.trim() !== "" &&
+      streetAddress.trim() !== "" &&
+      city.trim() !== "" &&
+      state.trim() !== "" &&
+      zipCode.trim() !== "" &&
+      country.trim() !== ""
     );
   }, [addressLabel, streetAddress, city, state, zipCode, country]);
 
@@ -161,7 +161,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
       resetForm(address);
       setShowForm(true);
     },
-    [resetForm],
+    [resetForm]
   );
 
   const handleCancel = useCallback(() => {
@@ -190,12 +190,12 @@ const AddressScreen = ({ navigation, route }: Props) => {
     };
 
     const hasExistingAddress = addresses.some(
-      address => address.id === normalizedAddress.id,
+      (address) => address.id === normalizedAddress.id
     );
 
     const updatedAddresses = hasExistingAddress
-      ? addresses.map(address =>
-          address.id === normalizedAddress.id ? normalizedAddress : address,
+      ? addresses.map((address) =>
+          address.id === normalizedAddress.id ? normalizedAddress : address
         )
       : [...addresses, normalizedAddress];
 
@@ -204,7 +204,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedAddresses));
     } catch (error) {
-      console.warn('Failed to save address', error);
+      console.log("Failed to save address", error);
     }
 
     setEditingAddressId(null);
@@ -232,7 +232,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
   return (
     <View style={styles.container}>
       <Header
-        label={editingAddressId ? 'Edit Address' : 'Manage Addresses'}
+        label={editingAddressId ? "Edit Address" : "Manage Addresses"}
         showBackButton={true}
         onBackPress={() => navigation.goBack()}
       />
@@ -262,7 +262,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
             </View>
           ) : (
             <View style={styles.addressList}>
-              {addresses.map(address => (
+              {addresses.map((address) => (
                 <TouchableOpacity
                   key={address.id}
                   activeOpacity={0.85}
@@ -276,7 +276,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
                     <View style={styles.addressTitleRow}>
                       <MapPin size={18} color={colors.primary} />
                       <CommonText style={styles.addressLabel}>
-                        {address.addressLabel || 'Untitled'}
+                        {address.addressLabel || "Untitled"}
                       </CommonText>
                     </View>
 
@@ -322,7 +322,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
           {showForm && (
             <View style={styles.formContainer}>
               <CommonText style={styles.formTitle}>
-                {editingAddressId ? 'Update Address' : 'Add New Address'}
+                {editingAddressId ? "Update Address" : "Add New Address"}
               </CommonText>
 
               <CustomTextInput
@@ -402,7 +402,7 @@ const AddressScreen = ({ navigation, route }: Props) => {
               />
 
               <CommonButton
-                label={editingAddressId ? 'Update Address' : 'Save Address'}
+                label={editingAddressId ? "Update Address" : "Save Address"}
                 fullWidth={true}
                 onPress={handleSave}
                 disabled={!isFormValid()}
